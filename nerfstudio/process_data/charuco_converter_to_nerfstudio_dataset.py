@@ -15,6 +15,7 @@
 """Class to process images or video including a ChArUco board into a nerfstudio dataset."""
 
 from dataclasses import dataclass
+from pathlib import Path
 from typing import List, Tuple
 
 from rich.console import Console
@@ -24,6 +25,7 @@ from nerfstudio.process_data import process_data_utils, charuco_utils
 from nerfstudio.process_data.base_converter_to_nerfstudio_dataset import (
     BaseConverterToNerfstudioDataset,
 )
+from nerfstudio.process_data.process_data_utils import CAMERA_MODELS
 
 CONSOLE = Console(width=120)
 
@@ -47,6 +49,9 @@ class ChArUcoConverterToNerfstudioDataset(BaseConverterToNerfstudioDataset):
     """Portion of the image to crop from the bottom.
        Can be used instead of `crop-factor 0.0 [num] 0.0 0.0` Should be in [0,1].
     """
+    @property
+    def absolute_charuco_path(self) -> Path:
+        return self.output_dir / "charuco"
 
     def main(self) -> None:
         """Process images or video including a ChArUco board into a nerfstudio dataset."""
@@ -72,9 +77,17 @@ class ChArUcoConverterToNerfstudioDataset(BaseConverterToNerfstudioDataset):
             CONSOLE.log(summary)
 
     def _run_charuco_pipeline(self) -> None:
-        raise NotImplementedError
+        """Run the ChArUco camera/pose estimation pipeline on the images."""
+        self.absolute_charuco_path.mkdir(parents=True, exist_ok=True)
+        charuco_utils.run_charuco_pipeline(
+            image_dir=self.image_dir,
+            charuco_dir=self.absolute_charuco_path,
+            camera_model=CAMERA_MODELS[self.camera_type],
+            verbose=self.verbose,
+        )
 
     def _generate_images_dir(self) -> List[str]:
+        """Copy images or extract from video."""
         summary_log = []
 
         # Video input
@@ -116,6 +129,7 @@ class ChArUcoConverterToNerfstudioDataset(BaseConverterToNerfstudioDataset):
         return [f"Estimated pose for {num_estimated} images"]
 
     def __post_init__(self) -> None:
+        """Validate the input parameters."""
         super().__post_init__()
 
         if self.camera_type != "perspective":
