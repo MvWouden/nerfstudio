@@ -67,7 +67,7 @@ class SurfaceModelConfig(ModelConfig):
     """How far along the ray to stop sampling."""
     far_plane_bg: float = 1000.0
     """How far along the ray to stop sampling of the background model."""
-    background_color: Literal["random", "last_sample", "white", "black"] = "black"
+    background_color: Literal["random", "last_sample", "black", "white", "black_white"] = "black"
     """Whether to randomize the background color."""
     use_average_appearance_embedding: bool = False
     """Whether to use average appearance embedding or zeros for inference."""

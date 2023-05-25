@@ -39,7 +39,7 @@ from nerfstudio.cameras.rays import RaySamples
 from nerfstudio.utils import colors
 from nerfstudio.utils.math import components_from_spherical_harmonics, safe_normalize
 
-BackgroundColor = Union[Literal["random", "last_sample", "black", "white"], Float[Tensor, "3"]]
+BackgroundColor = Union[Literal["random", "last_sample", "black", "white", "black_white"], Float[Tensor, "3"]]
 BACKGROUND_COLOR_OVERRIDE: Optional[Float[Tensor, "3"]] = None
 
 
@@ -107,7 +107,9 @@ class RGBRenderer(nn.Module):
             background_color = rgb[..., -1, :]
         if background_color == "random":
             background_color = torch.rand_like(comp_rgb).to(rgb.device)
-        if isinstance(background_color, str) and background_color in colors.COLORS_DICT:
+        if isinstance(background_color, str):
+            if background_color == "black_white":
+                background_color =  "black" if torch.rand(1) < 0.5 else "white"
             background_color = colors.COLORS_DICT[background_color].to(rgb.device)
 
         assert isinstance(background_color, torch.Tensor)

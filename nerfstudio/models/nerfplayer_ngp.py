@@ -78,9 +78,9 @@ class NerfplayerNGPModelConfig(InstantNGPModelConfig):
     """Temporal TV loss balancing weight for feature channels."""
     depth_weight: float = 1e-1
     """depth loss balancing weight for feature channels."""
-    train_background_color: Literal["random", "black", "white"] = "random"
+    train_background_color: Literal["random", "last_sample", "black", "white", "black_white"] = "random"
     """The training background color that is given to untrained areas."""
-    eval_background_color: Literal["random", "black", "white"] = "white"
+    eval_background_color: Literal["random", "last_sample", "black", "white", "black_white"] = "white"
     """The training background color that is given to untrained areas."""
     disable_viewing_dependent: bool = True
     """Disable viewing dependent effects."""

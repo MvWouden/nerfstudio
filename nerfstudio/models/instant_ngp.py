@@ -80,7 +80,7 @@ class InstantNGPModelConfig(ModelConfig):
     """How far along ray to stop sampling."""
     use_appearance_embedding: bool = False
     """Whether to use an appearance embedding."""
-    background_color: Literal["random", "black", "white"] = "random"
+    background_color: Literal["random", "last_sample", "black", "white", "black_white"] = "random"
     """The color that is given to untrained areas."""
     disable_scene_contraction: bool = False
     """Whether to disable scene contraction or not."""
